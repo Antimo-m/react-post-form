@@ -1,33 +1,109 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from "react"
 import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const initialForm = {
+  userName: "",
+  titolo: "",
+  testoBody: "",
+  isPublic: false
+}
+//oggetto che contiene gli stati dei miei input
+console.log(initialForm)
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [form, setForm] = useState(initialForm)
+  const [submit, setSumbit] = useState({})
+
+  function UpdateForm(event) {
+    const key = event.target.name
+    const value = event.target.type === "checkbox" ? event.target.checked : event.target.value
+    setForm({
+      ...form,
+      [key]: value
+    })
+  }
+
+
+  function Handlesubmit(e) {
+    e.preventDefault();
+    setSumbit(form)
+
+    setForm(initialForm) //qui gestiamo la pulizia degli input una volta inviato il post
+  }
+
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="container  text-center py-5">
+        <form onSubmit={Handlesubmit} className="row g-3 ">
+          <div className="d-flex justify-content-center">
+            <label htmlFor="name"></label>
+            <input
+              type="text"
+              name="userName"
+              value={form.userName}
+              onChange={UpdateForm}
+              className="form-control w-25 border border-5 "
+            />
+          </div>
+
+
+          <div className="d-flex justify-content-center">
+            <label htmlFor="titolo"></label>
+            <input
+              id="titolo"
+              type="text"
+              name="titolo"
+              value={form.titolo}
+              onChange={UpdateForm}
+              className="form-control w-25 border border-5"
+            />
+          </div>
+
+          <div className="d-flex justify-content-center">
+            <label htmlFor="testo"></label>
+            <input
+              id="testo"
+              type="text"
+              name="testoBody"
+              value={form.testoBody}
+              onChange={UpdateForm}
+              className="form-control w-25 border border-5"
+            />
+          </div>
+
+          <div className="d-flex gap-3 justify-content-center">
+            <input
+              type="checkbox"
+              name="isPublic"
+              id="isPublic"
+              className="form-check-input"
+              checked={form.isPublic}
+              onChange={UpdateForm}
+            />
+            <label htmlFor="isPublic"><strong>Clicca qui per rendere il tuo post pubblico!</strong></label>
+
+          </div>
+
+          <div>
+            <button type="submit" className="btn btn-primary w-25 mb-4 ">Invia post</button>
+          </div>
+        </form>
+
+        {Object.keys(submit).length === 0 ? (
+          <p>Nessun post</p>
+        ) : (<div className="card">
+          <h3 className="py-1">Il post da te creato</h3>
+          <p><strong>Autore: </strong>{submit.userName}</p>
+          <p><strong>titolo post: </strong>{submit.titolo}</p>
+          <p><strong>Testo: </strong>{submit.testoBody}</p>
+          <p><strong>Il tuo post è: </strong>{submit.isPublic === true ? "Pubblico" : "Privato"}</p>
+        </div>)}
+
+
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
